@@ -7,6 +7,7 @@ var noop = require('noop-logger')
 var zlib = require('zlib')
 var util = require('./util')
 var error = require('./error')
+var url = require('url')
 
 function downloadPrebuild (opts, cb) {
   var downloadUrl = util.getDownloadUrl(opts)
@@ -41,7 +42,33 @@ function downloadPrebuild (opts, cb) {
         }
 
         log.http('request', 'GET ' + downloadUrl)
-        var req = get(downloadUrl, function (err, res) {
+        var reqOpts = downloadUrl
+        var parsedDownloadUrl = url.parse(downloadUrl)
+        var parsedProxy = null
+        var isHttpsRequest = parsedDownloadUrl.protocol === 'https:'
+
+        if (opts['https-proxy'] && isHttpsRequest) {
+          parsedProxy = url.parse(opts['https-proxy'])
+
+          if (parsedProxy.protocol === 'https:') {
+            return cb('https-proxies currently not supported')
+          }
+        } else if (opts.proxy && !isHttpsRequest) {
+          parsedProxy = url.parse(opts.proxy)
+        }
+
+        if (parsedProxy) {
+          reqOpts = {
+            host: parsedProxy.hostname,
+            port: parsedProxy.port,
+            path: downloadUrl,
+            headers: {
+              Host: parsedDownloadUrl.host
+            }
+          }
+        }
+
+        var req = get(reqOpts, function (err, res) {
           if (err) return onerror(err)
           log.http(res.statusCode, downloadUrl)
           if (res.statusCode !== 200) return onerror()
