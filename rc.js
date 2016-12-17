@@ -1,4 +1,5 @@
 var minimist = require('minimist')
+var getAbi = require('node-abi').getAbi
 
 if (process.env.npm_config_argv) {
   var npmargs = ['prebuild', 'compile', 'build-from-source', 'debug']
@@ -56,6 +57,8 @@ module.exports = function (pkg) {
   if (rc.path === true) {
     delete rc.path
   }
+
+  rc.abi = getAbi(rc.target, rc.runtime)
 
   return rc
 }
