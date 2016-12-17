@@ -1,6 +1,6 @@
 {
   "name": "@lgeiger/prebuild-install",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A command line tool for easily install prebuilds for multiple version of node/iojs on a specific platform",
   "scripts": {
     "test": "tape test/*-test.js && npm run audit && npm run lint",
