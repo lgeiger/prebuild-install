@@ -60,7 +60,8 @@ test('npm_config_* are passed on from environment into rc', function (t) {
     npm_config_https_proxy: 'HTTPS_PROXY',
     npm_config_local_address: 'LOCAL_ADDRESS',
     npm_config_target: '1.4.0',
-    npm_config_runtime: 'electron'
+    npm_config_runtime: 'electron',
+    npm_config_platform: 'PLATFORM'
   }
   runRc(t, '', env, function (rc) {
     t.equal(rc.proxy, 'PROXY', 'proxy is set')
@@ -68,6 +69,7 @@ test('npm_config_* are passed on from environment into rc', function (t) {
     t.equal(rc['local-address'], 'LOCAL_ADDRESS', 'local-address is set')
     t.equal(rc.target, '1.4.0', 'target is set')
     t.equal(rc.runtime, 'electron', 'runtime is set')
+    t.equal(rc.platform, 'PLATFORM', 'platform is set')
     t.end()
   })
 })
